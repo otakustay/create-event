@@ -1,10 +1,19 @@
 {
   "private": true,
-  "name": "@otakustay/template-lib-ts",
+  "name": "@otakustay/create-event",
   "type": "module",
   "version": "1.0.0",
-  "description": "Template repository from TypeScript library project",
-  "license": "MIT",
+  "description": "Create an event with a listener and trigger function",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": {
+      "import": "./esm/index.js",
+      "require": "./cjs/index.js"
+    }
+  },
+  "module": "./es/index.js",
+  "main": "./cjs/index.js",
+  "types": "./cjs/index.d.ts",
   "engines": {
     "node": ">= 18"
   },
@@ -74,12 +83,12 @@
       ]
     }
   },
-  "homepage": "https://github.com/otakustay/template-lib-ts",
+  "homepage": "https://github.com/otakustay/create-event",
   "bugs": {
-    "url": "https://github.com/otakustay/template-lib-ts/issues"
+    "url": "https://github.com/otakustay/create-event/issues"
   },
   "author": "otakustay <otakustay@gmail.com> (https://github.com/otakustay)",
-  "repository": "github:otakustay/template-lib-ts",
+  "repository": "github:otakustay/create-event",
   "publishConfig": {
     "access": "public"
   },
