@@ -1,7 +1,7 @@
 {
   "name": "@otakustay/create-event",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Create an event with a listener and trigger function",
   "license": "Apache-2.0",
   "exports": {
