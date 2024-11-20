@@ -30,3 +30,17 @@ const onNextCount = onCount(count => count + 1);
 onNextCount(value => console.log(`Next value: ${value}`));
 emitCount(1); // Next value: 2
 ```
+
+### Remove Listener
+
+For all derived "on" function returned by a previous `onEvent` call, by passing no argument to it removes the listener.
+
+```tsx
+import {createEvent} from '@otakustay/create-event';
+
+const [onEvent, emitEvent] = createEvent<string>();
+
+const off = onEvent(value => console.log(value));
+off();
+trigger('Hello World'); // Nothing happens
+```

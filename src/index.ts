@@ -1,27 +1,47 @@
 export type EventHandler<E, R> = (event: E) => R;
 
-export type EventListener<E> = <R>(handler: EventHandler<E, R>) => EventListener<R>;
+export interface EventListener<E> {
+    (): void;
+    <R>(handler: EventHandler<E, R>): EventListener<R>;
+}
 
 export type EventTrigger<E> = (event: E) => void;
 
-export type EventResult<E> = [EventListener<E>, EventTrigger<E>];
+export type EventResult<E> = [on: EventListener<E>, emit: EventTrigger<E>];
 
-function createListener<E>(add: (handler: EventHandler<E, unknown>) => void): EventListener<E> {
-    const listener = <R>(handler: EventHandler<E, R>): EventListener<R> => {
-        add(handler);
+interface EventHandlerSource<E> {
+    attach: (handler: EventHandler<E, unknown>) => () => void;
+    detach: () => void;
+}
 
-        const nextAdd = (nextHandler: EventHandler<R, unknown>) => {
-            add(event => nextHandler(handler(event)));
-        };
-        return createListener(nextAdd);
-    };
+function createListener<E>({attach, detach}: EventHandlerSource<E>): EventListener<E> {
+    function listener(): void;
+    function listener<R>(handler: EventHandler<E, R>): EventListener<R>;
+    function listener<R>(handler?: EventHandler<E, R>) {
+        if (!handler) {
+            detach();
+            return;
+        }
+
+        const nextDetach = attach(handler);
+        const nextAttach = (nextHandler: EventHandler<R, unknown>) => attach(event => nextHandler(handler(event)));
+        const nextSource: EventHandlerSource<R> = {attach: nextAttach, detach: nextDetach};
+        return createListener(nextSource);
+    }
 
     return listener;
 }
 
 export function createEvent<E>(): EventResult<E> {
     const handlers = new Set<EventHandler<E, unknown>>();
-    const listener = createListener<E>(handler => handlers.add(handler));
+    const source: EventHandlerSource<E> = {
+        attach: handler => {
+            handlers.add(handler);
+            return () => handlers.delete(handler);
+        },
+        detach: () => {},
+    };
+    const listener = createListener<E>(source);
     const trigger = (event: E) => {
         for (const handler of handlers) {
             handler(event);
