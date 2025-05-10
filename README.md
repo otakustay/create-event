@@ -42,5 +42,5 @@ const [onEvent, emitEvent] = createEvent<string>();
 
 const off = onEvent(value => console.log(value));
 off();
-trigger('Hello World'); // Nothing happens
+emitEvent('Hello World'); // Nothing happens
 ```
